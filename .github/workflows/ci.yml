@@ -1,12 +1,26 @@
-name: CI
+name: Daily Commit
 
 on:
-  push:
-    branches: [ main ]
+  schedule:
+    - cron: '30 14 * * *'   # runs daily at 14:30 UTC (specific time, no wildcards)
+  workflow_dispatch:
 
 jobs:
-  build:
+  daily-commit:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - run: echo "CI is working!"
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Step for 24f2008315@ds.study.iitm.ac.in
+        run: echo "Running daily workflow"
+
+      - name: Make daily commit
+        run: |
+          echo "Daily update $(date)" >> daily_log.txt
+          git config user.name "24F2008315"
+          git config user.email "24f2008315@ds.study.iitm.ac.in"
+          git add daily_log.txt
+          git commit -m "Daily automated commit"
+          git push
